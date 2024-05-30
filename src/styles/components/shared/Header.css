@@ -1,0 +1,16 @@
+.headerContainer {
+  display: grid;
+  grid-template-columns: 80% 10% 10%;
+  padding: 2vh;
+  background-color: #228ae4;
+  color: #fff;
+  height: 10vh;
+}
+
+.headerTitleText {
+  font-family: "Ubuntu", sans-serif;
+  font-size: 40px;
+  line-height: normal;
+  letter-spacing: 2px;
+  font-weight: 700;
+}

@@ -1,0 +1,14 @@
+.graphicsContainer {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  padding: 3vh 10vh;
+  gap: 6vh;
+}
+
+.graphicsTitleText {
+  font-family: "Ubuntu", sans-serif;
+  font-size: 40px;
+  line-height: normal;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
