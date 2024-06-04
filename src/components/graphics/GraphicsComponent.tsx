@@ -1,29 +1,28 @@
-import Link from 'next/link'
-import React from 'react'
-import { itemsSidebarArray } from '@/utils/itemsSidebarArray'
-import { BarChart, LineChart } from '@mantine/charts';
-import { Paper, Text } from '@mantine/core';
+import { BarChart, LineChart } from '@mantine/charts'
+import { Paper, Text } from '@mantine/core'
 
 interface ChartTooltipProps {
-    label: string;
-    payload: Record<string, any>[] | undefined;
+    label: string
+    payload: Record<string, any>[] | undefined
 }
+
 function ChartTooltip({ label, payload }: ChartTooltipProps) {
-    if (!payload) return null;
+    if (!payload) return null
 
     return (
-        <Paper px="md" py="sm" withBorder shadow="md" radius="md">
+        <Paper px='md' py='sm' withBorder shadow='md' radius='md'>
             <Text fw={500} mb={5}>
                 {label}
             </Text>
             {payload.map((item: any) => (
-                <Text key={item.name} c={item.color} fz="sm">
+                <Text key={item.name} c={item.color} fz='sm'>
                     {item.name}: {item.value}
                 </Text>
             ))}
         </Paper>
-    );
+    )
 }
+
 export const data = [
     { month: 'January', Smartphones: 1200, Laptops: 900, Tablets: 200 },
     { month: 'February', Smartphones: 1900, Laptops: 1200, Tablets: 400 },
@@ -31,92 +30,81 @@ export const data = [
     { month: 'April', Smartphones: 1000, Laptops: 200, Tablets: 800 },
     { month: 'May', Smartphones: 800, Laptops: 1400, Tablets: 1200 },
     { month: 'June', Smartphones: 750, Laptops: 600, Tablets: 1000 },
-];
+]
+
 export default function GraphicsComponent() {
-    return (
-        <div className='layoutContainer '>
-            <div className='sideBarContainer py-[25vh]'>
-                {itemsSidebarArray.map((item, index) =>
-                    <Link key={index} href={item.url} className=' sideBarText w-full h-full flex justify-center items-center'
-                        style={{ background: index === 1 ? '#12B886' : 'white' }}>
-                        <span className=' transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 duration-300 w-full h-full flex justify-center items-center'>
-                            {item.name}
-                        </span>
-                    </Link>
-
-                )}
+  return (
+    <div className='layoutContainer '>
+      <div >
+        <h1 className='graphicsTitleText flex justify-center text-4xl py-10'>Gráficas</h1>
+          <div className='graphicsContainer '>
+            <BarChart
+                h={'30vh'}
+                data={data}
+                dataKey='month'
+                type='stacked'
+                tooltipProps={{
+                    content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} />,
+                }}
+                series={[
+                    { name: 'Smartphones', color: 'violet.6' },
+                    { name: 'Laptops', color: 'blue.6' },
+                    { name: 'Tablets', color: 'teal.6' },
+                ]}
+            />
+            <div>
+                <BarChart
+                    h={'30vh'}
+                    data={data}
+                    dataKey='month'
+                    tooltipProps={{
+                        content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} />,
+                    }}
+                    series={[
+                        { name: 'Smartphones', color: 'violet.6' },
+                        { name: 'Laptops', color: 'blue.6' },
+                        { name: 'Tablets', color: 'teal.6' },
+                    ]}
+                />
             </div>
-            <div >
-                <h1 className='graphicsTitleText flex justify-center text-4xl py-10'>Gráficas</h1>
-                <div className='graphicsContainer '>
-                    <BarChart
-                        h={'30vh'}
-                        data={data}
-                        dataKey="month"
-                        type="stacked"
-                        tooltipProps={{
-                            content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} />,
-                        }}
-                        series={[
-                            { name: 'Smartphones', color: 'violet.6' },
-                            { name: 'Laptops', color: 'blue.6' },
-                            { name: 'Tablets', color: 'teal.6' },
-                        ]}
-                    />
-                    <div>
-                        <BarChart
-                            h={'30vh'}
-                            data={data}
-                            dataKey="month"
-                            tooltipProps={{
-                                content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} />,
-                            }}
-                            series={[
-                                { name: 'Smartphones', color: 'violet.6' },
-                                { name: 'Laptops', color: 'blue.6' },
-                                { name: 'Tablets', color: 'teal.6' },
-                            ]}
-                        />
-                    </div>
-                    <div>
-                        <BarChart
-                            h={'30vh'}
-                            data={data}
-                            dataKey="month"
-                            type="stacked"
-                            orientation="vertical"
-                            yAxisProps={{ width: 80 }}
-                            tooltipProps={{
-                                content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} />,
-                            }}
-                            series={[
-                                { name: 'Smartphones', color: 'violet.6' },
-                                { name: 'Laptops', color: 'blue.6' },
-                                { name: 'Tablets', color: 'teal.6' },
-                            ]}
-                        />
-                    </div>
-                    <div>
-                        <LineChart
-                            h={'30vh'}
-                            data={data2}
-                            dataKey="date"
-                            tooltipProps={{
-                                content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} />,
-                            }}
-                            series={[
-                                { name: 'Apples', color: 'indigo.6' },
-                                { name: 'Oranges', color: 'blue.6' },
-                                { name: 'Tomatoes', color: 'teal.6' },
-                            ]}
-                        />
-                    </div>
-
-                </div>
+            <div>
+                <BarChart
+                    h={'30vh'}
+                    data={data}
+                    dataKey='month'
+                    type='stacked'
+                    orientation='vertical'
+                    yAxisProps={{ width: 80 }}
+                    tooltipProps={{
+                        content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} />,
+                    }}
+                    series={[
+                        { name: 'Smartphones', color: 'violet.6' },
+                        { name: 'Laptops', color: 'blue.6' },
+                        { name: 'Tablets', color: 'teal.6' },
+                    ]}
+                />
             </div>
-        </div>
+            <div>
+                <LineChart
+                    h={'30vh'}
+                    data={data2}
+                    dataKey='date'
+                    tooltipProps={{
+                        content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} />,
+                    }}
+                    series={[
+                        { name: 'Apples', color: 'indigo.6' },
+                        { name: 'Oranges', color: 'blue.6' },
+                        { name: 'Tomatoes', color: 'teal.6' },
+                    ]}
+                />
+            </div>
 
-    )
+          </div>
+      </div>
+    </div>
+  )
 }
 
 const data2 = [
@@ -150,4 +138,4 @@ const data2 = [
         Oranges: 1726,
         Tomatoes: 2290,
     },
-];
+]

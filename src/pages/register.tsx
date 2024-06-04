@@ -1,4 +1,4 @@
-import ProfileForm from '@/components/profile/Profile'
+import Register from '@/components/register/Register'
 
 export default function Profile() {
   return (
@@ -15,7 +15,7 @@ export default function Profile() {
         justify-center
       '
     >
-      <ProfileForm />
+      <Register />
     </section>
   )
 }

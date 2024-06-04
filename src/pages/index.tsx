@@ -1,5 +1,4 @@
-import Offers from "@/components/home/Offers";
-import Header from "@/components/shared/Header";
+import Offers from '@/components/home/Offers'
 
 export default function Home() {
   return (

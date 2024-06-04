@@ -1,39 +1,23 @@
 import { Button, Group, Input, Select } from '@mantine/core'
-import Link from 'next/link'
-import React from 'react'
-import { itemsSidebarArray } from '@/utils/itemsSidebarArray'
-
 
 export default function Offers() {
   return (
     <div className='layoutContainer '>
-      <div className='sideBarContainer py-[25vh]'>
-        {itemsSidebarArray.map((item, index) =>
-          <Link key={index} href={item.url} className=' sideBarText w-full h-full flex justify-center items-center'
-            style={{ background: index === 0 ? '#12B886' : 'white' }}>
-            <span className=' transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 duration-300 w-full h-full
-            flex justify-center items-center'>
-              {item.name}
-            </span>
-          </Link>
-
-        )}
-      </div>
       <div className='offersTableContainer'>
         <div className='offersTableHeader'>
           <div className='p-2 flex justify-center items-center '>País:
-            <Input placeholder="Colombia" size="xs" radius="xs" className='px-2' disabled />
+            <Input placeholder='Colombia' size='xs' radius='xs' className='px-2' disabled />
           </div>
           <div className='p-2 flex justify-center items-center '>Categoría:
-            <Select placeholder="Framework" size="xs" radius="xs" className='px-2' />
+            <Select placeholder='Framework' size='xs' radius='xs' className='px-2' />
           </div>
 
           <div className='p-2 flex justify-center items-center '>Palabra clave en el título:
-            <Input placeholder="Especialización" size="xs" radius="xs" className='px-2' />
+            <Input placeholder='Especialización' size='xs' radius='xs' className='px-2' />
           </div>
           <div className='flex justify-center items-center p-4'>
             <Group>
-              <Button bg={'#12B886'} radius={0} size="xl"  >Filtrar</Button>
+              <Button bg={'#12B886'} radius={0} size='xl'  >Filtrar</Button>
             </Group>
           </div>
         </div>
@@ -45,7 +29,7 @@ export default function Offers() {
             </div>
           )}
           {itemsTableSubArray.map((item, index) =>
-            <React.Fragment key={index}>
+            <div key={index}>
               <div className='itemsTableDescription flex justify-center items-center' >
                 {item.type}
               </div>
@@ -64,7 +48,7 @@ export default function Offers() {
               <div className='itemsTableDescription flex justify-center items-center' >
                 $ {item.lowerSalary}
               </div>
-            </React.Fragment>
+            </div>
           )}
         </div>
       </div>
@@ -80,7 +64,6 @@ const itemsHeaderTableArray = [
   { name: 'Salario más alto (COP)' },
   { name: 'Salario más bajo (COP)' },
 ]
-
 
 const itemsTableSubArray = [
   {
@@ -101,7 +84,6 @@ const itemsTableSubArray = [
     lowerSalary: '4,500,000',
 
   },
-
   {
     type: 'Lenguaje de programación',
     tentechnology: 'JavaScript',
@@ -129,6 +111,4 @@ const itemsTableSubArray = [
     lowerSalary: '2,500,000',
 
   },
-
-
 ]

@@ -1,13 +1,11 @@
-import { RiDeleteBin6Fill } from 'react-icons/ri'
 import { useEffect, useState, useRef } from 'react'
-import { create, byId } from '@/services/users.service'
+import { create } from '@/services/users.service'
 import Loading from '@/components/shared/Loading'
 
 export default function ProfileForm() {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const timeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -54,7 +52,6 @@ export default function ProfileForm() {
   }
 
   useEffect(() => {
-    // botener el usuario del context
     return () => {
       if (timeoutIdRef.current) {
         clearTimeout(timeoutIdRef.current)
@@ -65,11 +62,12 @@ export default function ProfileForm() {
   return (
     <div className='flex justify-center border border-slate-300 px-[80px] rounded-xl shadow-xl relative'>
       {isLoading && <Loading size={150} loading={isLoading} round={'xl'} />}
+      
+      <form onSubmit={onSubmit} className='px-[50px] w-[500px] pt-[60px]'>
 
-      <form className='px-[50px] w-[500px] pt-[60px]'>
         <div className='flex flex-col gap-4 mb-[40px]'>
           <h3 className='text-[30px] font-bold text-center text-[#1e293b]'>
-            Información de perfil
+            Crea tu usuario
           </h3>
         </div>
 
@@ -80,7 +78,7 @@ export default function ProfileForm() {
               className='h-[35px] rounded-md pl-[10px] border border-slate-700'
               type='text'
               id='name'
-              value={username}
+              onChange={onChangeUsername}
             />
           </div>
 
@@ -90,27 +88,17 @@ export default function ProfileForm() {
               className='h-[35px] rounded-md pl-[10px] border border-slate-700'
               type='text'
               id='email'
-              value={email}
+              onChange={onChangeEmail}
             />
           </div>
 
           <div className='flex flex-col gap-1 text-[15px] font-semibold'>
-            <label className='pl-[4px]' htmlFor='password'>Nueva contraseña</label>
+            <label className='pl-[4px]' htmlFor='password'>Contraseña</label>
             <input
               className='h-[35px] rounded-md pl-[10px] border border-slate-700'
               type='password'
               id='password'
-              value={password}
-            />
-          </div>
-
-          <div className='flex flex-col gap-1 text-[15px] font-semibold'>
-            <label className='pl-[4px]' htmlFor='password'>Confirmar contraseña</label>
-            <input
-              className='h-[35px] rounded-md pl-[10px] border border-slate-700'
-              type='password'
-              id='password'
-              value={confirmPassword}
+              onChange={onChangePassword}
             />
           </div>
         </div>
@@ -124,12 +112,7 @@ export default function ProfileForm() {
             Cancelar
           </button>
         </div>
-
-        <button className='mt-[40px] text-[14px] font-bold text-[#4c0519] hover:text-[#be123c] flex gap-2'>
-          <RiDeleteBin6Fill size={18} />
-          <span>Eliminar mi cuenta</span>
-        </button>
       </form>
-    </div>  
+    </div>    
   )
 }
