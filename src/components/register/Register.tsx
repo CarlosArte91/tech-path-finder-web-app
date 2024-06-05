@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from 'react'
 import { create } from '@/services/users.service'
 import Loading from '@/components/shared/Loading'
+import { useRouter } from 'next/router'
 
 export default function ProfileForm() {
+  const router  = useRouter()
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -33,8 +35,13 @@ export default function ProfileForm() {
 
     const [{ data }] = await Promise.all([createUserPromise, delayPromise])
 
-    console.log(data)
     setIsLoading(false)
+    router.push('/login')
+  }
+
+  const goToLogin = (event: any) => {
+    event.preventDefault()
+    router.push('/login')
   }
 
   const onSubmit = (event: any) => {
@@ -108,7 +115,10 @@ export default function ProfileForm() {
             Guardar
           </button>
 
-          <button className='bg-[#f43f5e] px-[20px] rounded-md py-[8px] hover:bg-[#fb7185] text-white'>
+          <button
+            className='bg-[#f43f5e] px-[20px] rounded-md py-[8px] hover:bg-[#fb7185] text-white'
+            onClick={goToLogin}
+          >
             Cancelar
           </button>
         </div>

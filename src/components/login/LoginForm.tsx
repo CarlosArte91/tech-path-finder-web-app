@@ -5,8 +5,10 @@ import { login } from '@/services/users.service'
 import Loading from '@/components/shared/Loading'
 import { saveCurrentUser } from '@/utils/currentUser'
 import { UserContext } from '@/context/UserContext'
+import { useRouter } from 'next/router'
 
 export default function LoginForm() {
+  const router  = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -31,18 +33,29 @@ export default function LoginForm() {
     const createLogin = login(email, password)
     const delayPromise = delay(1000)
 
-    const [{ data }] = await Promise.all([createLogin, delayPromise])
-    if (data) {
-      await saveCurrentUser(data)
-      context?.setUser({
-        id: data.id,
-        username: data.username,
-        email:data.email,
-      })
-    }
+    try {
+      const [{ data }] = await Promise.all([createLogin, delayPromise])
+      if (data) {
+        await saveCurrentUser(data)
+        context?.setUser({
+          id: data.id,
+          username: data.username,
+          email:data.email,
+        })
+      }
+      setIsLoading(false)
+      router.push('/')      
+    } catch (error) {
+      alert('Usuario o contraseña incorrectos')
+      setEmail('')
+      setPassword('')
+      setIsLoading(false)
+    }    
+  }
 
-    console.log(data)
-    setIsLoading(false)
+  const goToRegister = (event: any) => {
+    event.preventDefault()
+    router.push('/register')
   }
 
   const onSubmit = (event: any) => {
@@ -66,7 +79,10 @@ export default function LoginForm() {
             <span>
               Si aun no tienes cuenta
             </span>
-            <button className='hover:text-[#0891b2] font-semibold underline'>
+            <button
+              className='hover:text-[#0891b2] font-semibold underline'
+              onClick={goToRegister}
+            >
               regístrate aquí
             </button>
           </div>
@@ -79,6 +95,7 @@ export default function LoginForm() {
               className='h-[35px] rounded-md pl-[10px] border border-slate-700'
               type='text'
               id='email'
+              value={email}
               onChange={onChangeEmail}
             />
           </div>
@@ -89,6 +106,7 @@ export default function LoginForm() {
               className='h-[35px] rounded-md pl-[10px] border border-slate-700'
               type='password'
               id='password'
+              value={password}
               onChange={onChangePassword}
             />
           </div>

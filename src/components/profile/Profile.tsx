@@ -1,9 +1,15 @@
 import { RiDeleteBin6Fill } from 'react-icons/ri'
+import { BsDoorClosedFill } from 'react-icons/bs'
 import { useEffect, useState, useRef } from 'react'
-import { create, byId } from '@/services/users.service'
+import { update, deleteById } from '@/services/users.service'
+import { useContext } from 'react'
+import { UserContext } from '@/context/UserContext'
+import { useRouter } from 'next/router'
 import Loading from '@/components/shared/Loading'
 
 export default function ProfileForm() {
+  const context = useContext(UserContext)
+  const router  = useRouter()
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -23,38 +29,78 @@ export default function ProfileForm() {
     setPassword(event.target.value)
   }
 
+  const onChangeConfirmPassword = (event: any) => {
+    setConfirmPassword(event.target.value)
+  }
+
   const delay = (ms: number) => new Promise(resolve => {
     timeoutIdRef.current = setTimeout(resolve, ms)
   })
 
-  const createUser = async (newUser: any) => {
+  const updateUser = async (user: any) => {
     setIsLoading(true)
 
-    const createUserPromise = create(newUser)
+    const updateUserPromise = update(user)
     const delayPromise = delay(1000)
 
-    const [{ data }] = await Promise.all([createUserPromise, delayPromise])
+    const [{ data }] = await Promise.all([updateUserPromise, delayPromise])
 
-    console.log(data)
     setIsLoading(false)
+    setPassword('')
+    setConfirmPassword('')
+    alert('El usuario se actualizó correctamente')
   }
 
   const onSubmit = (event: any) => {
     event.preventDefault()
     setIsLoading(true)
 
-    const newUser = {
-      username,
-      email,
-      password,
-      createdAt: Date.now(),
+    if (password !== confirmPassword) {
+      alert('las contraseñas no coinciden')
+      setIsLoading(false)
+    } else {
+      const user = {
+        id: context?.user.id,
+        username,
+        email,
+        password,
+        createdAt: Date.now(),
+      }
+      updateUser(user)
     }
+  }
+  
+  const deleteUser = async (id: any) => {
+    setIsLoading(true)
 
-    createUser(newUser)
+    const deleteUserPromise = deleteById(id)
+    const delayPromise = delay(1000)
+
+    const [{ data }] = await Promise.all([deleteUserPromise, delayPromise])
+
+    context?.logout()
+    setIsLoading(false)
+    router.push('/')
+  }
+
+  const buttonDelete = (event: any) => {
+    event.preventDefault()
+    deleteUser(context?.user.id)
+  }
+
+  const goHome = (event: any) => {
+    event.preventDefault()
+    router.push('/')
   }
 
   useEffect(() => {
-    // botener el usuario del context
+    if (context?.user.id) {
+      setUsername(context.user.username)
+      setEmail(context.user.email)
+    }
+  }, [context?.user.id])
+
+  useEffect(() => {
     return () => {
       if (timeoutIdRef.current) {
         clearTimeout(timeoutIdRef.current)
@@ -66,7 +112,7 @@ export default function ProfileForm() {
     <div className='flex justify-center border border-slate-300 px-[80px] rounded-xl shadow-xl relative'>
       {isLoading && <Loading size={150} loading={isLoading} round={'xl'} />}
 
-      <form className='px-[50px] w-[500px] pt-[60px]'>
+      <form onSubmit={onSubmit} className='px-[50px] w-[500px] pt-[60px]'>
         <div className='flex flex-col gap-4 mb-[40px]'>
           <h3 className='text-[30px] font-bold text-center text-[#1e293b]'>
             Información de perfil
@@ -81,6 +127,7 @@ export default function ProfileForm() {
               type='text'
               id='name'
               value={username}
+              onChange={onChangeUsername}
             />
           </div>
 
@@ -91,6 +138,7 @@ export default function ProfileForm() {
               type='text'
               id='email'
               value={email}
+              onChange={onChangeEmail}
             />
           </div>
 
@@ -101,16 +149,18 @@ export default function ProfileForm() {
               type='password'
               id='password'
               value={password}
+              onChange={onChangePassword}
             />
           </div>
 
           <div className='flex flex-col gap-1 text-[15px] font-semibold'>
-            <label className='pl-[4px]' htmlFor='password'>Confirmar contraseña</label>
+            <label className='pl-[4px]' htmlFor='confirm-password'>Confirmar contraseña</label>
             <input
               className='h-[35px] rounded-md pl-[10px] border border-slate-700'
               type='password'
-              id='password'
+              id='confirm-password'
               value={confirmPassword}
+              onChange={onChangeConfirmPassword}
             />
           </div>
         </div>
@@ -120,12 +170,26 @@ export default function ProfileForm() {
             Guardar
           </button>
 
-          <button className='bg-[#f43f5e] px-[20px] rounded-md py-[8px] hover:bg-[#fb7185] text-white'>
+          <button
+            className='bg-[#f43f5e] px-[20px] rounded-md py-[8px] hover:bg-[#fb7185] text-white'
+            onClick={goHome}
+          >
             Cancelar
           </button>
         </div>
 
-        <button className='mt-[40px] text-[14px] font-bold text-[#4c0519] hover:text-[#be123c] flex gap-2'>
+        <button
+          className='mt-[50px] text-[14px] font-bold text-[#4c0519] hover:text-[#be123c] flex gap-2'
+          onClick={() => context?.logout()}
+        >
+          <BsDoorClosedFill size={18} />
+          <span>Cerrar sesión</span>
+        </button>
+
+        <button
+          className='mt-[20px] text-[14px] font-bold text-[#4c0519] hover:text-[#be123c] flex gap-2'
+          onClick={buttonDelete}
+        >
           <RiDeleteBin6Fill size={18} />
           <span>Eliminar mi cuenta</span>
         </button>
