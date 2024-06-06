@@ -10,12 +10,4 @@ const techJobOffers = axios.create({
   },
 })
 
-techJobOffers.interceptors.request.use(request => {
-  console.log('Enviando solicitud:', request)
-  return request
-}, error => {
-  console.error('Error en la solicitud:', error)
-  return Promise.reject(error)
-})
-
 export default techJobOffers
