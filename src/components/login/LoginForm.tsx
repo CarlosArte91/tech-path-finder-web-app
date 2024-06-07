@@ -6,6 +6,7 @@ import Loading from '@/components/shared/Loading'
 import { saveCurrentUser } from '@/utils/currentUser'
 import { UserContext } from '@/context/UserContext'
 import { useRouter } from 'next/router'
+import Swal from 'sweetalert2'
 
 export default function LoginForm() {
   const router  = useRouter()
@@ -46,7 +47,11 @@ export default function LoginForm() {
       setIsLoading(false)
       router.push('/')      
     } catch (error) {
-      alert('Usuario o contraseña incorrectos')
+      Swal.fire({
+        icon: "error",
+        title: "Usuario o contraseña incorrectos",
+        text: "Verifica tus credenciales",
+      })
       setEmail('')
       setPassword('')
       setIsLoading(false)

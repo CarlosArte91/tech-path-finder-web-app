@@ -34,7 +34,8 @@ export default function Offers() {
         paddingLeft: '8px',
         paddingRight: '8px',
         borderBottom: '1px solid #d1d5db',
-        borderRight: '1px solid #d1d5db'
+        borderRight: '1px solid #d1d5db',
+        cursor: 'pointer',
       },
     },
   }
@@ -51,6 +52,10 @@ export default function Offers() {
     if (keyword) {
       router.push(`/offers?keyword=${keyword}`)
     }
+  }
+
+  const goFromRow = (row: any) => {
+    router.push(`/offers?keyword=${row.tech}`)
   }
 
   const getTechnologies = async () => {
@@ -139,6 +144,7 @@ export default function Offers() {
             data={offers}
             pagination
             customStyles={customStyles}
+            onRowClicked={goFromRow}
           />
         </div>        
       </section>

@@ -1,3 +1,5 @@
+import { formatCurrency } from "@/utils/formatCurrency"
+
 export function offersAdapter(offers: any, categories: any) {
   const response: any = []
 
@@ -9,9 +11,9 @@ export function offersAdapter(offers: any, categories: any) {
       type: category?.name,
       tech: offer.name,
       total: offer.totalOffers,
-      average: offer.averageSalary,
-      highest: offer.highestSalary,
-      lowest: offer.lowestSalary,
+      average: formatCurrency(offer.averageSalary),
+      highest: formatCurrency(offer.highestSalary),
+      lowest: formatCurrency(offer.lowestSalary),
     })
   })
 
@@ -30,6 +32,7 @@ export function offersByKeywordAdapter(offers: any) {
       contractType: offer.contractType,
       workSchedule: offer.workSchedule,
       salary: offer.salary,
+      description: offer.description,
     })
   })
 

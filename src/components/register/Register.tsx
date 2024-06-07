@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { create } from '@/services/users.service'
 import Loading from '@/components/shared/Loading'
 import { useRouter } from 'next/router'
+import Swal from 'sweetalert2'
 
 export default function ProfileForm() {
   const router  = useRouter()
@@ -36,6 +37,12 @@ export default function ProfileForm() {
     const [{ data }] = await Promise.all([createUserPromise, delayPromise])
 
     setIsLoading(false)
+    Swal.fire({
+      icon: "success",
+      title: "El usuario se creó correctamente",
+      showConfirmButton: false,
+      timer: 1500
+    })
     router.push('/login')
   }
 

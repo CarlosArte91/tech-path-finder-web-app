@@ -6,6 +6,7 @@ import { useContext } from 'react'
 import { UserContext } from '@/context/UserContext'
 import { useRouter } from 'next/router'
 import Loading from '@/components/shared/Loading'
+import Swal from 'sweetalert2'
 
 export default function ProfileForm() {
   const context = useContext(UserContext)
@@ -48,7 +49,12 @@ export default function ProfileForm() {
     setIsLoading(false)
     setPassword('')
     setConfirmPassword('')
-    alert('El usuario se actualizó correctamente')
+    Swal.fire({
+      icon: "success",
+      title: "El usuario se actualizó correctamente",
+      showConfirmButton: false,
+      timer: 1500
+    })
   }
 
   const onSubmit = (event: any) => {
@@ -56,7 +62,11 @@ export default function ProfileForm() {
     setIsLoading(true)
 
     if (password !== confirmPassword) {
-      alert('las contraseñas no coinciden')
+      Swal.fire({
+        icon: "error",
+        title: "las contraseñas no coinciden",
+        text: "Los campos deben coincidir",
+      })
       setIsLoading(false)
     } else {
       const user = {
@@ -71,16 +81,34 @@ export default function ProfileForm() {
   }
   
   const deleteUser = async (id: any) => {
-    setIsLoading(true)
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Se eliminará el usuario permanentemente!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#1e293b",
+      cancelButtonColor: "#f43f5e",
+      confirmButtonText: "Si, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setIsLoading(true)
+        const deleteUserPromise = deleteById(id)
+        const delayPromise = delay(1000)
 
-    const deleteUserPromise = deleteById(id)
-    const delayPromise = delay(1000)
+        const [{ data }] = await Promise.all([deleteUserPromise, delayPromise])
 
-    const [{ data }] = await Promise.all([deleteUserPromise, delayPromise])
+        context?.logout()
+        setIsLoading(false)
+        router.push('/')
 
-    context?.logout()
-    setIsLoading(false)
-    router.push('/')
+        Swal.fire({
+          title: "Usuario Borrado",
+          text: "Te haz dado de baja de la web.",
+          icon: "success"
+        });
+      }
+    })
   }
 
   const buttonDelete = (event: any) => {

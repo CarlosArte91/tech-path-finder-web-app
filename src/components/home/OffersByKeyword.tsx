@@ -4,10 +4,15 @@ import {  getByKeyword } from '@/services/offers.service'
 import { useEffect, useState } from 'react'
 import { offersByKeywordAdapter } from './offersAdapter'
 import { useRouter } from 'next/router'
+import BasicLoading from '../shared/BasicLoading';
+import ShowOffer from './ShowOffer'
 
 export default function Offers() {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
   const [offers, setOffers] = useState([])
+  const [openModal, setOpenModal] = useState(false)
+  const [offerToShow, setOfferToShow] = useState({})
   const [keyword, setKeyword] = useState<string>('')
 
   const customStyles = {
@@ -31,14 +36,21 @@ export default function Offers() {
         paddingLeft: '8px',
         paddingRight: '8px',
         borderBottom: '1px solid #d1d5db',
-        borderRight: '1px solid #d1d5db'
+        borderRight: '1px solid #d1d5db',
+        cursor: 'pointer',
       },
     },
+  }
+
+  const showOffer = (row: any) => {
+    setOfferToShow(row)
+    setOpenModal(true)
   }
 
   const getOffers = async () => {
     const { data } = await getByKeyword(router.query.keyword)
     setOffers(offersByKeywordAdapter(data))
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -49,38 +61,45 @@ export default function Offers() {
   }, [router.query])
 
   return (
-    <section
-      className='bg-[#ffff] mx-[15px] my-[15px] h-[845px] rounded-md shadow-lg px-[50px] py-[25px]'
-    >
-      <div className='mb-[25px] relative'>
-        <h2 className='text-[#0f172a] text-center text-[20px] font-semibold'>
-          {`Ofertas disponibles para ${keyword.toUpperCase()}`}
-        </h2>
+    <>
+      <ShowOffer offer={offerToShow} show={openModal} onClose={() => setOpenModal(false)} />
+      
+      <section
+        className='bg-[#ffff] mx-[15px] my-[15px] h-[845px] rounded-md shadow-lg px-[50px] py-[25px]'
+      >
+        <div className='mb-[25px] relative'>
+          <h2 className='text-[#0f172a] text-center text-[20px] font-semibold'>
+            {`Ofertas disponibles para ${keyword.toUpperCase()}`}
+          </h2>
 
-        <div className='absolute right-[50px] -top-[3px]'>
-            <button
-              className='
-                bg-[#0f172a] text-[16px] text-white hover:bg-[#334155] rounded-md
-                flex gap-[6px] py-[8px] px-[20px] justify-center items-center
-              '
-              onClick={() => router.push('/')}
-            >
-              <IoChevronBack size={20} />
-              <span>Volver</span>
-            </button>
-          </div>
-      </div>
+          <div className='absolute right-[50px] -top-[3px]'>
+              <button
+                className='
+                  bg-[#0f172a] text-[16px] text-white hover:bg-[#334155] rounded-md
+                  flex gap-[6px] py-[8px] px-[20px] justify-center items-center
+                '
+                onClick={() => router.push('/')}
+              >
+                <IoChevronBack size={20} />
+                <span>Volver</span>
+              </button>
+            </div>
+        </div>
 
-      <div className='border border-[#9ca3af] rounded-[8px] overflow-hidden shadow-md max-w-[1600px]'>
-        <DataTable
-          columns={columns}
-          data={offers}
-          pagination
-          paginationPerPage={11}
-          customStyles={customStyles}
-        />
-      </div>        
-    </section>
+        <div className='border border-[#9ca3af] rounded-[8px] overflow-hidden shadow-md max-w-[1600px]'>
+          <DataTable
+            columns={columns}
+            data={offers}
+            pagination
+            paginationPerPage={11}
+            customStyles={customStyles}
+            progressPending={isLoading}
+            progressComponent={<BasicLoading />}
+            onRowClicked={showOffer}
+          />
+        </div>        
+      </section>
+    </>
   )
 }
 
